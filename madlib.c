@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#define FILE_BUFF_MAX 500
+#define FILE_BUFF_MAX 5000
 #define MAX_NUM_INPUTS 50
 #define MAX_INPUT_LEN 50
 
@@ -24,8 +24,8 @@ int main(int argc, char** argv) {
 	int input_index;
 	
 	// Read the file and get the inputs.
-	int i;
-	for (i = 0; file_buff[i] != EOF; i++) {
+	int i = 0;
+	do {
 		fscanf(file, "%c", &file_buff[i]);
 		if (file_buff[i] == '\n') {
 			if (odd_line == 0) {
@@ -55,8 +55,10 @@ int main(int argc, char** argv) {
 				odd_line--;
 			}
 		}
-	}
-	file_buff[i - 2] = 0;
+		i++;
+	} while (file_buff[i] != EOF);
+
+	file_buff[i - 1] = 0;
 
 	// Print the output.
 	input_index = 0;

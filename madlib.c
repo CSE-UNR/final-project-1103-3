@@ -65,7 +65,23 @@ int main(int argc, char** argv) {
 	i = 0;
 	do {
 		if (file_buff[i] == '\n') {
-			printf(" %s ", inputs[input_index]);
+			switch(file_buff[i+1]) {
+				case '.':
+					printf(" %s", inputs[input_index]);
+					break;
+				case ',':
+					printf(" %s", inputs[input_index]);
+					break;
+				case '!':
+					printf(" %s", inputs[input_index]);
+					break;
+				case '?':
+					printf(" %s", inputs[input_index]);
+					break;
+				default:
+					printf(" %s ", inputs[input_index]);
+					break;
+			}
 			input_index++;
 		}
 		else {

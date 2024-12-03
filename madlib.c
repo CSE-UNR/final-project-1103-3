@@ -12,23 +12,24 @@ int main(int argc, char** argv) {
 		return 0;
 	}
 	
-	FILE* file = fopen(argv[0x01], "r");
+	FILE* file = fopen(argv[1], "r");
 	if (file == NULL) {
-		printf("Cant open %s\n", argv[0x01]);
+		printf("Cant open %s\n", argv[1]);
 	}
 
 	char file_buff[FILE_BUFF_MAX];
 	char temp;
 	char inputs[MAX_NUM_INPUTS][MAX_INPUT_LEN];
-	int sl = 0x01;
+	int odd_line = 1;
 	int input_index;
 	
 	// Read the file and get the inputs.
-	for (int i = 0x00; file_buff[i] != EOF; i++) {
+	int i;
+	for (i = 0; file_buff[i] != EOF; i++) {
 		fscanf(file, "%c", &file_buff[i]);
 		if (file_buff[i] == '\n') {
-			if (sl == 0x00) {
-				sl++;
+			if (odd_line == 0) {
+				odd_line++;
 			}
 			else {
 				fscanf(file, "%c", &temp);
@@ -51,14 +52,16 @@ int main(int argc, char** argv) {
 					default:
 						break;
 				}
-				sl--;
+				odd_line--;
 			}
 		}
 	}
+	file_buff[i - 2] = 0;
 
 	// Print the output.
-	input_index = 0x00;
-	for (int i = 0; file_buff[i] != 0x00; i++) {
+	input_index = 0;
+	i = 0;
+	do {
 		if (file_buff[i] == '\n') {
 			printf(" %s ", inputs[input_index]);
 			input_index++;
@@ -66,8 +69,9 @@ int main(int argc, char** argv) {
 		else {
 			printf("%c", file_buff[i]);
 		}
-	}
-
+		i++;
+	} while (file_buff[i] != '\0'); 
+	printf("\n");
 	return 0;
 }
 
@@ -83,6 +87,6 @@ void get_word(char* input, char type) {
 			printf("Enter an V: ");
 			break;
 	}
-	fgets(input, MAX_INPUT_LEN, stdin);
+	scanf("%s", input);
 }
 

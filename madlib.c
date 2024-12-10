@@ -1,125 +1,109 @@
-// Author: Pearce Robinson, Raidon Santos, Carter Brashear
-// 12/9/2024
-// Madlib final project
 #include <stdio.h>
 
-#define FILE_BUFF_MAX 5000
-#define MAX_NUM_INPUTS 50
-#define MAX_INPUT_LEN 50
+#define DEFAULT_INPUT_FILE "madlib1.txt"
+#define MAX_LINE_LEN 100
+#define MAX_NUM_LINES 100
 
-void get_word(char* input, char type);
-void print_result(char* filebuff, char inputs[MAX_NUM_INPUTS][MAX_INPUT_LEN]);
-void punctuation_fix(char* filebuff, char inputs[MAX_NUM_INPUTS][MAX_INPUT_LEN], int char_index, int input_index);
+int open_input_file(FILE *input_file, int argc, char **argv);
+void load_input_file(FILE *input_file, char file_buff[MAX_NUM_LINES][MAX_LINE_LEN]);
+void print_buffer(char buffer[MAX_NUM_LINES][MAX_LINE_LEN]);
+void get_words(char buffer[MAX_NUM_LINES][MAX_LINE_LEN]);
+void get_word(char* destination, char word_type);
 
-int main(int argc, char** argv) {
-	if (argc <= 1) {
-		printf("Please enter input file name as an argument. Do not put spaces in the file name.\n");
-		return 0;
-	}
-	
-	FILE* file = fopen(argv[1], "r");
-	if (file == NULL) {
-		printf("Cant open %s\n", argv[1]);
-	}
+int main(int argc, char **argv) {
+  FILE *input_file;
+  printf("DEBUG: OPENGING FILE...\n");
+  if (argc <= 1) {
+    // No arguments were passed into the executable so load the default file
+    printf("File not found, reverting to base file.");
+    input_file = fopen(DEFAULT_INPUT_FILE, "r");
+    if (input_file == NULL) {
+      // TODO: Print error message
+      return 0;
+    }
+  } else {
+    // An argument was passed into the executable so use it as the filename
+    input_file = fopen(argv[1], "r");
+    if (input_file == NULL) {
+      // TODO: Print error message
+      return 0;
+    }
+  }
 
-	char file_buff[FILE_BUFF_MAX];
-	char temp;
-	char inputs[MAX_NUM_INPUTS][MAX_INPUT_LEN];
-	int odd_line = 1;
-	int input_index;
-	
-	// Read the file and get the inputs.
-	int i = 0;
-	do {
-		fscanf(file, "%c", &file_buff[i]);
-		if (file_buff[i] == '\n') {
-			if (odd_line == 0) {
-				odd_line++;
-			}
-			else {
-				fscanf(file, "%c", &temp);
-				switch (temp) {
-					case 'A':
-						get_word(inputs[input_index], 'A');
-						input_index++;
-						i--;
-						break;
-					case 'N':
-						get_word(inputs[input_index], 'N');
-						input_index++;
-						i--;
-						break;
-					case 'V':
-						get_word(inputs[input_index], 'V');
-						input_index++;
-						i--;
-						break;
-					default:
-						break;
-				}
-				odd_line--;
-			}
-		}
-		i++;
-	} while (file_buff[i] != EOF);
-
-	file_buff[i - 1] = 0;
-
-	
-	print_result(file_buff, inputs);
-
-	return 0;
+  // Reserve space to load the entire file into.
+  char file_buff[MAX_NUM_LINES][MAX_LINE_LEN];
+  printf("DEBUG: LOADING FILE...\n");
+  new_load_input_file(input_file, file_buff);
+  printf("DEBUG: GETTING INPUT...\n");
+  get_words(file_buff);
+  printf("DEBUG: PRINTING FILE...\n");
+  print_buffer(file_buff);
 }
 
-void get_word(char* input, char type) {
-	switch (type) {
-		case 'A':
-			printf("Enter an A: ");
-			break;
-		case 'N':
-			printf("Enter an N: ");
-			break;
-		case 'V':
-			printf("Enter an V: ");
-			break;
-	}
-	scanf("%s", input);
+int open_input_file(FILE *input_file, int argc, char **argv) {
+  if (argc <= 1) {
+    // No arguments were passed into the executable so load the default file
+    input_file = fopen(DEFAULT_INPUT_FILE, "r");
+    if (input_file == NULL) {
+      // TODO: Print error message
+      printf("File not found, reverting to base file.");
+      return 0;
+    }
+  } else {
+    // An argument was passed into the executable so use it as the filename
+    input_file = fopen(argv[1], "r");
+    if (input_file == NULL) {
+      // TODO: Print error message
+      return 0;
+    }
+  }
+  return 1;
 }
 
-void print_result(char* filebuff, char inputs[MAX_NUM_INPUTS][MAX_INPUT_LEN]){
-	// Print the output.
-	int input_index = 0;
-	int i = 0;
-	do {
-		if (filebuff[i] == '\n') {
-			punctuation_fix(filebuff, inputs, i, input_index);
-			input_index++;
-		}
-		else {
-			printf("%c", filebuff[i]);
-		}
-		i++;
-	} while (filebuff[i] != '\0'); 
-	printf("\n");
+void load_input_file(FILE *input_file, char file_buff[MAX_NUM_LINES][MAX_LINE_LEN]) {
+  for (int i = 0; i < MAX_NUM_LINES; i++) {
+    fgets(file_buff[i], MAX_LINE_LEN, input_file);
+    if (file_buff[i][0] == '\n' || file_buff[i][0] == '\0') {
+      continue;
+    }
+  }
 }
 
-void punctuation_fix(char* filebuff, char inputs[MAX_NUM_INPUTS][MAX_INPUT_LEN], int char_index, int input_index) {
-	switch(filebuff[char_index+1]) {
-		case '.':
-			printf(" %s", inputs[input_index]);
-			break;
-		case ',':
-			printf(" %s", inputs[input_index]);
-			break;
-		case '!':
-			printf(" %s", inputs[input_index]);
-			break;
-		case '?':
-			printf(" %s", inputs[input_index]);
-			break;
-		default:
-			printf(" %s ", inputs[input_index]);
-			break;
-	}
+void print_buffer(char buffer[MAX_NUM_LINES][MAX_LINE_LEN]) {
+  for (int i = 0; buffer[i][0] != '\0'; i++) {
+    printf("%s", buffer[i]);
+  }
 }
 
+void get_words(char buffer[MAX_NUM_LINES][MAX_LINE_LEN]) {
+  for (int i = 0; i < MAX_NUM_LINES; i++) {
+    switch (buffer[i][0]) {
+      case 'A':
+      case 'N':
+      case 'V':
+        // If the line starts with an A N or V and the following character is a newline: then get the word from the user and store it over the same line
+        if (buffer[i][1] == '\n') {
+          get_word(buffer[i], buffer[i][0]);
+        }
+      default:
+        break;
+    }
+  }
+}
+
+void get_word(char* destination, char word_type) {
+  switch (word_type) {
+    case 'A':
+      printf("Enter an Adjective: ");
+      scanf("%s", destination);
+      break;
+    case 'N':
+      printf("Enter a Noun: ");
+      scanf("%s", destination);
+      break;
+    case 'V':
+      printf("Enter a Verb: ");
+      scanf("%s", destination);
+      break;
+  }
+}

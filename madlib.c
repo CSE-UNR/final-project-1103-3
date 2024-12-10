@@ -9,10 +9,11 @@ void load_input_file(FILE *input_file, char file_buff[MAX_NUM_LINES][MAX_LINE_LE
 void print_buffer(char buffer[MAX_NUM_LINES][MAX_LINE_LEN]);
 void get_words(char buffer[MAX_NUM_LINES][MAX_LINE_LEN]);
 void get_word(char* destination, char word_type);
+void remove_newlines(char file_buff[MAX_NUM_LINES][MAX_LINE_LEN]);
 
 int main(int argc, char **argv) {
   FILE *input_file;
-  printf("DEBUG: OPENGING FILE...\n");
+  //  printf("DEBUG: OPENGING FILE...\n");
   if (argc <= 1) {
     // No arguments were passed into the executable so load the default file
     printf("File not found, reverting to base file.");
@@ -32,11 +33,12 @@ int main(int argc, char **argv) {
 
   // Reserve space to load the entire file into.
   char file_buff[MAX_NUM_LINES][MAX_LINE_LEN];
-  printf("DEBUG: LOADING FILE...\n");
-  new_load_input_file(input_file, file_buff);
-  printf("DEBUG: GETTING INPUT...\n");
+  //  printf("DEBUG: LOADING FILE...\n");
+  load_input_file(input_file, file_buff);
+  //  printf("DEBUG: GETTING INPUT...\n");
   get_words(file_buff);
-  printf("DEBUG: PRINTING FILE...\n");
+  //  printf("DEBUG: PRINTING FILE...\n");
+  remove_newlines(file_buff);
   print_buffer(file_buff);
 }
 
@@ -92,18 +94,29 @@ void get_words(char buffer[MAX_NUM_LINES][MAX_LINE_LEN]) {
 }
 
 void get_word(char* destination, char word_type) {
+  destination[0] = ' ';
   switch (word_type) {
     case 'A':
       printf("Enter an Adjective: ");
-      scanf("%s", destination);
+      scanf("%s", destination + 1);
       break;
     case 'N':
       printf("Enter a Noun: ");
-      scanf("%s", destination);
+      scanf("%s", destination + 1);
       break;
     case 'V':
       printf("Enter a Verb: ");
-      scanf("%s", destination);
+      scanf("%s", destination + 1);
       break;
+  }
+}
+
+void remove_newlines(char file_buff[MAX_NUM_LINES][MAX_LINE_LEN]) {
+  for (int h = 0; h < MAX_NUM_LINES; h++) {
+    for (int k = 0; k < MAX_LINE_LEN; k++) {
+      if (file_buff[h][k] == '\n') {
+        file_buff[h][k] = '\0';
+      }
+    }
   }
 }

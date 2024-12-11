@@ -1,4 +1,4 @@
-// Authors: Carter Brashear, Raidon Santos, 
+// Authors: Carter Brashear, Raidon Santos, Pearce Robinson
 // CS135 final project: madlib
 #include <stdio.h>
 
